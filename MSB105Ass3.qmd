@@ -28,7 +28,13 @@ library(tidyverse) |> suppressPackageStartupMessages()
 library(lubridate) |> suppressPackageStartupMessages()
 library(PxWebApiData) |> suppressPackageStartupMessages()
 library(flextable) |> suppressPackageStartupMessages()
+library(dplyr) |> suppressPackageStartupMessages()
+library(stringr) |> suppressPackageStartupMessages()
 ```
+
+
+
+# Kommuner og data innhenting fra SSB
 
 ```{r}
 knr <- as.character(
@@ -146,4 +152,297 @@ pend_02_24_arbBF <- pend_02_24_ssb_arbBF %>%
 print(pend_02_24_arbBF, n = 5)
 ```
 
+
+## Kommunesammenslåingene
+
+```{r}
+# knr Bokn-regionen utenom kommunene som inngår i Nye Stavanger,
+# Nye Sandnes og Vindafjord
+knr_u_SSV <- paste(
+  "k", 
+  c(
+    1124, 1127, 1120, 1122, 1121, 1119, 1144, 1130, 1106, 1146, 1149, 1145, 1133, 1134, 1135,  1102, 4611, 4612
+    ),
+  sep = ""
+)
+```
+
+
+### Bosted rundt Boknafjorden 
+
+```{r}
+pend_02_24_boBF <- pend_02_24_boBF %>% 
+  mutate(
+    nye_bkom = case_when(
+      bkom %in% c("k1102", "k1108", "k1129") ~ "k1108",
+      bkom %in% c("k1103", "k1141", "k1142") ~ "k1103",
+      bkom %in% c("k1154", "k1159", "k1160") ~ "k1160",
+      # Øvrige  Bokna-region beholder sin bkom
+      TRUE ~ bkom
+    ),
+    nye_bkom_navn = case_when(
+      bkom %in% c("k1102", "k1108", "k1129") ~ "Sandnes",
+      bkom %in% c("k1103", "k1141", "k1142") ~ "Stavanger",
+      bkom %in% c("k1154", "k1159", "k1160") ~ "Vindafjord",
+      # Øvrige  Bokna-region beholder sitt bkom_navn
+      TRUE ~ bkom_navn
+    ),
+    nye_akom = case_when(
+      akom %in% c("k1102", "k1108", "k1129") ~ "k1108",
+      akom %in% c("k1103", "k1141", "k1142") ~ "k1103",
+      akom %in% c("k1154", "k1159", "k1160") ~ "k1160",
+      # Øvrige  Bokna-regionen beholder sin akom
+      akom %in% knr_u_SSV ~ akom,   
+      # Resten av landet kodes som knr "9999"
+      TRUE ~ "k9999"
+    ),
+    nye_akom_navn = case_when(
+      akom %in% c("k1102", "k1108", "k1129") ~ "Sandnes",
+      akom %in% c("k1103", "k1141", "k1142") ~ "Stavanger",
+      akom %in% c("k1154", "k1159", "k1160") ~ "Vindafjord",
+      # Øvrige Bokna-regionen beholder sitt akom_navn
+      akom %in% knr_u_SSV ~ akom_navn,  
+      # Resten av landet kodes som knr "RAL"
+      TRUE ~ "RAL"
+      )
+  )
+```
+
+```{r}
+pend_02_24_boBF_agg <- pend_02_24_boBF %>% 
+  group_by(
+    aar, 
+    nye_akom, nye_akom_navn,
+    nye_bkom, nye_bkom_navn
+  ) %>% 
+  summarise(
+    pendlere = sum(pendlere, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+print(pend_02_24_boBF_ny, n = 5)
+
+```
+
+
+### Eksempel: Stavanger
+
+```{r}
+pend_02_24_boBF_agg %>% 
+  filter(nye_akom == "k1103", nye_bkom == "k1103") %>% 
+  arrange(aar) %>% 
+  print(n = 25)
+```
+
+```{r}
+pend_02_24_boBF_agg %>% 
+  distinct(nye_bkom) %>% 
+  pull(nye_bkom) %>% 
+  print(width = 70)
+
+```
+
+```{r}
+pend_02_24_boBF_agg %>% 
+  distinct(nye_akom) %>% 
+  pull(nye_akom) %>% 
+  print(width = 70)
+
+```
+
+
+### Tilsvarende for pend_02_24_arbBF
+
+```{r}
+pend_02_24_arbBF <- pend_02_24_arbBF %>% 
+  mutate(
+# Nye bostedskommuner
+    nye_bkom = case_when(
+      bkom %in% c("k1102", "k1108", "k1129") ~ "k1108",
+      bkom %in% c("k1103", "k1141", "k1142") ~ "k1103",
+      bkom %in% c("k1154", "k1159", "k1160") ~ "k1160",
+      bkom %in% knr_u_SSV ~ bkom,
+      # Resten av landet → RAL
+      TRUE ~ "k9999"
+    ),
+    nye_bkom_navn = case_when(
+      bkom %in% c("k1102", "k1108", "k1129") ~ "Sandnes",
+      bkom %in% c("k1103", "k1141", "k1142") ~ "Stavanger",
+      bkom %in% c("k1154", "k1159", "k1160") ~ "Vindafjord",
+      bkom %in% knr_u_SSV ~ bkom_navn,
+      TRUE ~ "RAL"
+    ),
+
+    # Nye arbeidsstedskommuner
+    nye_akom = case_when(
+      akom %in% c("k1102", "k1108", "k1129") ~ "k1108",
+      akom %in% c("k1103", "k1141", "k1142") ~ "k1103",
+      akom %in% c("k1154", "k1159", "k1160") ~ "k1160",
+      akom %in% knr_u_SSV ~ akom,
+      TRUE ~ akom
+    ),
+    nye_akom_navn = case_when(
+      akom %in% c("k1102", "k1108", "k1129") ~ "Sandnes",
+      akom %in% c("k1103", "k1141", "k1142") ~ "Stavanger",
+      akom %in% c("k1154", "k1159", "k1160") ~ "Vindafjord",
+      akom %in% knr_u_SSV ~ akom_navn,
+      TRUE ~ akom_navn
+    )
+  )
+```
+
+```{r}
+pend_02_24_arbBF_agg <- pend_02_24_arbBF %>% 
+  group_by(
+    aar,
+    nye_akom, nye_akom_navn,
+    nye_bkom, nye_bkom_navn
+  ) %>% 
+  summarise(
+    pendlere = sum(pendlere, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+```
+
+```{r}
+pend_02_24_arbBF_agg %>% 
+  filter(nye_akom == "k1103", nye_bkom == "k1103") %>% 
+  arrange(aar) %>% 
+  print(n = 25)
+
+```
+
+```{r}
+pend_02_24_arbBF_agg %>% 
+  distinct(nye_bkom) %>% 
+  pull(nye_bkom) %>% 
+  print(width = 70)
+
+```
+
+```{r}
+pend_02_24_arbBF_agg %>% 
+  distinct(nye_akom) %>% 
+  pull(nye_akom) %>% 
+  print(width = 70)
+
+```
+
+
+```{r}
+pend_02_24_arbBF_agg <- pend_02_24_arbBF_agg |>
+  rename(
+    akom = nye_akom,
+    akom_navn = nye_akom_navn,
+    bkom = nye_bkom,
+    bkom_navn = nye_bkom_navn
+  )
+```
+
+```{r}
+pend_02_24_boBF_agg <- pend_02_24_boBF_agg |>
+  rename(
+    akom = nye_akom,
+    akom_navn = nye_akom_navn,
+    bkom = nye_bkom,
+    bkom_navn = nye_bkom_navn
+  )
+```
+
+```{r}
+names(pend_02_24_arbBF_agg)
+```
+
+```{r}
+names(pend_02_24_boBF_agg)
+```
+
+
+```{r}
+boBF_arb_RAL <- pend_02_24_boBF_agg |>
+  filter(akom == "k9999")
+```
+
+```{r}
+pend_02_24 <- bind_rows(
+  pend_02_24_arbBF_agg,
+  boBF_arb_RAL
+  )
+```
+
+```{r}
+names(pend_02_24)
+```
+
+```{r}
+dim(pend_02_24)
+```
+
+```{r}
+names(pend_02_24_arbBF_agg)
+```
+
+```{r}
+dim(pend_02_24_arbBF_agg)
+```
+
+```{r}
+names(pend_02_24_boBF_agg)
+```
+
+```{r}
+dim(pend_02_24_boBF_agg)
+```
+
+
+```{r}
+# Rydder ved å fjerne det vi ikke trenger
+rm(boBF_arb_RAL, pend_02_24_arbBF, pend_02_24_boBF, 
+   pend_02_24_ssb_arbBF, pend_02_24_ssb_boBF
+   )
+```
+
+
+## Totalt antall arbeidstakere i hele landet per år
+
+```{r}
+# oppdatert med "31", "32", "33", "39", "40", "55", "56"
+# for splitting i 2024
+fnr <- c(
+  "30", "01", "02", "06", "03", "34", "04", "05", "38",
+  "07", "08", "42", "09", "10", "11", "46", "12", "14",
+  "15", "50", "16", "17", "18", "54", "19", "20", "31", 
+  "32", "33", "39", "40", "55", "56"
+  )
+```
+
+```{r}
+tot_arb_HL_raw <- ApiData12(
+  urlToData = "11616",
+  Region    = fnr,
+  Tid       = as.character(2002:2024)
+)
+
+```
+
+
+```{r}
+tot_arb_HL <- tot_arb_HL_raw %>% 
+  # 1. Kun bosatt i regionen
+  filter(statistikkvariabel == "Sysselsatte personer bosatt i regionen") %>% 
+  # 2. Kun alder 15–74
+  filter(str_detect(Alder, "15-74")) %>% 
+  # 3. Summerer over alle fylker og kjønn per år
+  group_by(Tid) %>% 
+  summarise(
+    arbtak_HL = sum(value, na.rm = TRUE),
+    .groups   = "drop"
+  ) %>% 
+  rename(aar = Tid) %>% 
+  arrange(aar) %>% 
+  as_tibble()
+
+print(tot_arb_HL, n = 23)
+```
 
