@@ -1,0 +1,149 @@
+---
+title: "Assignment 3"
+subtitle:  "Pendling"
+author: "Ivan Stordal & Irjan Vikre"
+date: last-modified
+date-format: "dddd D MMM, YYYY"
+csl: hvl_apa7_stil_bokmal_v1
+lang: en-GB
+format:
+  html: default
+  typst:
+    papersize: a4
+  pdf: 
+    documentclass: article
+    number-sections: true
+    keep-tex: true
+    papersize: A4
+    fig-pos: "H"
+abstract: ""
+editor: 
+  markdown: 
+    wrap: sentence
+echo: false
+---
+
+```{r}
+library(tidyverse) |> suppressPackageStartupMessages()
+library(lubridate) |> suppressPackageStartupMessages()
+library(PxWebApiData) |> suppressPackageStartupMessages()
+library(flextable) |> suppressPackageStartupMessages()
+```
+
+```{r}
+knr <- as.character(
+  c(
+    1102, 1103, 1108, 1124, 1127, 1120, 1122, 1121, 1119, 
+    1144, 1130, 1106, 1146, 1149, 1216, 4612, 1145, 1133,
+    1134, 1135, 1154, 1160, 1211, 4611, 1129, 1141, 1142
+    )
+  )
+```
+
+```{r}
+knavn <- c("Sandnes (-2019)", "Stavanger", "Nye-Sandnes", 
+           "Sola", "Randaberg", "Klepp", "Gjesdal", "Time", 
+           "Hå", "Kvitsøy", "Strand", "Haugesund", "Tysvær", 
+           "Karmøy", "Sveio (-2019)", "Sveio", "Bokn", 
+           "Hjelmeland", "Suldal", "Sauda", "Vindafjord (-2006)", 
+           "Vindafjord", "Etne (-2019)", "Etne", 
+           "Forsand (-2019)", "Finnøy (-2020)",
+           "Rennesøy (-2020)"
+)
+```
+
+```{r}
+#Get more info about table
+ApiData(
+"http://data.ssb.no/api/v0/en/table/03321",
+returnApiQuery = TRUE
+) 
+```
+
+```{r}
+pend_02_24_ssb_boBF <- ApiData12(
+    urlToData = "03321",
+    ArbstedKomm = list('*'),
+    Bokommuen = knr, # Merk skrivemåten
+    Tid = as.character(2002:2024)
+)
+```
+
+```{r}
+#| cache: true
+
+pend_02_24_boBF <- pend_02_24_ssb_boBF %>% 
+  # Henter kommune navn fra desc df
+  mutate(
+    akom_navn = arbeidsstedskommune,
+    bkom_navn = bostedskommune ,
+    akom = paste("k", ArbstedKomm, sep = ""),
+    bkom = paste("k", Bokommuen, sep = ""),
+    # skifter navn og nummer for Etne og Sveio
+    akom = ifelse(akom == "k1211", "k4611", akom),
+    akom = ifelse(akom == "k1216", "k4612", akom),
+    bkom = ifelse(bkom == "k1211", "k4611", bkom),
+    bkom = ifelse(bkom == "k1216", "k4612", bkom),
+    akom_navn = ifelse(akom_navn == "Etne (-2019)", "Etne", akom_navn),
+    akom_navn = ifelse(akom_navn == "Sveio (-2019)", "Sveio", akom_navn),
+    bkom_navn = ifelse(bkom_navn == "Etne (-2019)", "Etne", bkom_navn),
+    bkom_navn = ifelse(bkom_navn == "Sveio (-2019)", "Sveio", bkom_navn)    
+  ) %>% 
+  # Endrer noen variabelnavn
+  rename(
+    aar = Tid,
+    pendlere = value 
+  )  %>%
+  select(aar, akom, akom_navn, bkom, bkom_navn, pendlere) %>% 
+  as_tibble()
+```
+
+```{r}
+print(pend_02_24_boBF, n = 5)
+```
+
+
+```{r}
+pend_02_24_ssb_arbBF <- ApiData12(
+    urlToData   = "03321",
+    ArbstedKomm = knr,               # jobber i Bokna-kommunene
+    Bokommuen   = list('*'),         # bor i alle kommuner
+    Tid         = as.character(2002:2024)
+)
+
+```
+
+```{r}
+#| cache: true
+
+pend_02_24_arbBF <- pend_02_24_ssb_arbBF %>% 
+  # Henter kommune navn fra desc df
+  mutate(
+    akom_navn = arbeidsstedskommune,
+    bkom_navn = bostedskommune ,
+    akom = paste("k", ArbstedKomm, sep = ""),
+    bkom = paste("k", Bokommuen, sep = ""),
+    # skifter navn og nummer for Etne og Sveio
+    akom = ifelse(akom == "k1211", "k4611", akom),
+    akom = ifelse(akom == "k1216", "k4612", akom),
+    bkom = ifelse(bkom == "k1211", "k4611", bkom),
+    bkom = ifelse(bkom == "k1216", "k4612", bkom),
+    akom_navn = ifelse(akom_navn == "Etne (-2019)", "Etne", akom_navn),
+    akom_navn = ifelse(akom_navn == "Sveio (-2019)", "Sveio", akom_navn),
+    bkom_navn = ifelse(bkom_navn == "Etne (-2019)", "Etne", bkom_navn),
+    bkom_navn = ifelse(bkom_navn == "Sveio (-2019)", "Sveio", bkom_navn)    
+  ) %>% 
+  # Endrer noen variabelnavn
+  rename(
+    aar = Tid,
+    pendlere = value 
+  )  %>%
+  select(aar, akom, akom_navn, bkom, bkom_navn, pendlere) %>% 
+  as_tibble()
+```
+
+```{r}
+print(pend_02_24_arbBF, n = 5)
+```
+
+
