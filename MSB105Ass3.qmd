@@ -32,6 +32,10 @@ library(dplyr) |> suppressPackageStartupMessages()
 library(stringr) |> suppressPackageStartupMessages()
 ```
 
+```{r}
+
+Sys.setlocale("LC_ALL", "Norwegian")
+```
 
 
 # Kommuner og data innhenting fra SSB
@@ -220,7 +224,7 @@ pend_02_24_boBF_agg <- pend_02_24_boBF %>%
     .groups = "drop"
   )
 
-print(pend_02_24_boBF_ny, n = 5)
+print(pend_02_24_boBF_agg, n = 5)
 
 ```
 
