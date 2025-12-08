@@ -520,3 +520,63 @@ arb_flyt_02_24 <- tot_arb_HL %>%
 
 ```
 
+
+
+```{r}
+print(arb_flyt_02_24, n = 23)
+```
+
+
+```{r}
+# Fjerne koder for resten av landet
+pend_clean <- pend_02_24 %>% 
+  filter(akom != "k9999")   
+```
+
+
+```{r}
+# Pivotering hvor bosted settes som rader og arbeidsted settes som kolonner 
+
+pend_mat <- pend_clean %>%
+  select(aar, bkom, akom, pendlere) %>%
+  pivot_wider(
+    names_from = akom,
+    values_from = pendlere,
+    values_fill = 0
+  )
+```
+
+
+```{r}
+# Totalt bosatte arbeidstakere i Boknafjorden 
+
+pend_mat <- pend_mat %>%
+  mutate(k0000_TotalBo = rowSums(across(starts_with("k"))))
+```
+
+
+```{r}
+#Beregner prosentvis andel av bosatte
+
+andel_pend_mat <- pend_mat %>%
+  mutate(across(
+    starts_with("k"),
+    ~ ifelse(k0000_TotalBo > 0, .x / k0000_TotalBo * 100, 0),
+    .names = "andel_{.col}"
+  ))
+```
+
+```{r}
+#Omgjør oversikten over andel bosatte til langt format
+
+andel_pendle_data_02_24_long <- andel_pend_mat %>%
+  select(aar, bkom, starts_with("andel_")) %>%
+  pivot_longer(
+    cols = starts_with("andel_"),
+    names_to = "akom",
+    names_prefix = "andel_",
+    values_to = "andel"
+  ) %>%
+  arrange(aar, bkom, akom)
+```
+
