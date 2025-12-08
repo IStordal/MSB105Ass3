@@ -450,3 +450,73 @@ tot_arb_HL <- tot_arb_HL_raw %>%
 print(tot_arb_HL, n = 23)
 ```
 
+
+
+## Beregning av bo og jobbfordeling mellom Bokna-regionen og resten av landet
+
+
+
+```{r}
+# Boknafjordkommuner etter sammenslåinger
+bf_kommuner <- c(
+  "k1108",  # Sandnes
+  "k1103",  # Stavanger
+  "k1160",  # Vindafjord
+  "k1124", "k1127", "k1120", "k1122", "k1121", "k1119",
+  "k1144", "k1130", "k1106", "k1146", "k1149", "k1145",
+  "k1133", "k1134", "k1135"
+)
+```
+
+
+
+```{r}
+# Bor i BF og jobber i BF
+
+bBFjBF <- pend_02_24 %>% 
+  filter(bkom %in% bf_kommuner,
+         akom %in% bf_kommuner) %>% 
+  group_by(aar) %>% 
+  summarise(bBFjBF = sum(pendlere), .groups = "drop")
+```
+
+
+```{r}
+# Bor i Boknafjorden og jobber i resten av landet
+
+bBFjRAL <- pend_02_24 %>% 
+  filter(bkom %in% bf_kommuner,
+         akom == "k9999") %>% 
+  group_by(aar) %>% 
+  summarise(bBFjRAL = sum(pendlere), .groups = "drop")
+```
+
+
+```{r}
+#Bir i resten av landet og jobber i Boknafjorden 
+
+bRALjBF <- pend_02_24 %>% 
+  filter(!(bkom %in% bf_kommuner),
+         bkom != "k9999",
+         akom %in% bf_kommuner) %>% 
+  group_by(aar) %>% 
+  summarise(bRALjBF = sum(pendlere), .groups = "drop")
+```
+
+
+```{r}
+#Kombinerer bo og jobbfordeling til et datasett over arbeidsflyt
+
+
+arb_flyt_02_24 <- tot_arb_HL %>% 
+  left_join(bBFjBF,  by = "aar") %>%
+  left_join(bBFjRAL, by = "aar") %>%
+  left_join(bRALjBF, by = "aar") %>% 
+  mutate(
+    bBFjBF  = replace_na(bBFjBF, 0),
+    bBFjRAL = replace_na(bBFjRAL, 0),
+    bRALjBF = replace_na(bRALjBF, 0)
+  )
+
+```
+
