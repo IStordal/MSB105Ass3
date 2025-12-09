@@ -37,7 +37,6 @@ library(stringr) |> suppressPackageStartupMessages()
 Sys.setlocale("LC_ALL", "Norwegian")
 ```
 
-
 # Kommuner og data innhenting fra SSB
 
 ```{r}
@@ -112,7 +111,6 @@ pend_02_24_boBF <- pend_02_24_ssb_boBF %>%
 print(pend_02_24_boBF, n = 5)
 ```
 
-
 ```{r}
 pend_02_24_ssb_arbBF <- ApiData12(
     urlToData   = "03321",
@@ -156,7 +154,6 @@ pend_02_24_arbBF <- pend_02_24_ssb_arbBF %>%
 print(pend_02_24_arbBF, n = 5)
 ```
 
-
 ## Kommunesammenslåingene
 
 ```{r}
@@ -171,8 +168,7 @@ knr_u_SSV <- paste(
 )
 ```
 
-
-### Bosted rundt Boknafjorden 
+### Bosted rundt Boknafjorden
 
 ```{r}
 pend_02_24_boBF <- pend_02_24_boBF %>% 
@@ -228,7 +224,6 @@ print(pend_02_24_boBF_agg, n = 5)
 
 ```
 
-
 ### Eksempel: Stavanger
 
 ```{r}
@@ -253,7 +248,6 @@ pend_02_24_boBF_agg %>%
   print(width = 70)
 
 ```
-
 
 ### Tilsvarende for pend_02_24_arbBF
 
@@ -333,7 +327,6 @@ pend_02_24_arbBF_agg %>%
 
 ```
 
-
 ```{r}
 pend_02_24_arbBF_agg <- pend_02_24_arbBF_agg |>
   rename(
@@ -361,7 +354,6 @@ names(pend_02_24_arbBF_agg)
 ```{r}
 names(pend_02_24_boBF_agg)
 ```
-
 
 ```{r}
 boBF_arb_RAL <- pend_02_24_boBF_agg |>
@@ -399,14 +391,12 @@ names(pend_02_24_boBF_agg)
 dim(pend_02_24_boBF_agg)
 ```
 
-
 ```{r}
 # Rydder ved å fjerne det vi ikke trenger
 rm(boBF_arb_RAL, pend_02_24_arbBF, pend_02_24_boBF, 
    pend_02_24_ssb_arbBF, pend_02_24_ssb_boBF
    )
 ```
-
 
 ## Totalt antall arbeidstakere i hele landet per år
 
@@ -430,7 +420,6 @@ tot_arb_HL_raw <- ApiData12(
 
 ```
 
-
 ```{r}
 tot_arb_HL <- tot_arb_HL_raw %>% 
   # 1. Kun bosatt i regionen
@@ -450,11 +439,7 @@ tot_arb_HL <- tot_arb_HL_raw %>%
 print(tot_arb_HL, n = 23)
 ```
 
-
-
 ## Beregning av bo og jobbfordeling mellom Bokna-regionen og resten av landet
-
-
 
 ```{r}
 # Boknafjordkommuner etter sammenslåinger
@@ -468,8 +453,6 @@ bf_kommuner <- c(
 )
 ```
 
-
-
 ```{r}
 # Bor i BF og jobber i BF
 
@@ -479,7 +462,6 @@ bBFjBF <- pend_02_24 %>%
   group_by(aar) %>% 
   summarise(bBFjBF = sum(pendlere), .groups = "drop")
 ```
-
 
 ```{r}
 # Bor i Boknafjorden og jobber i resten av landet
@@ -491,7 +473,6 @@ bBFjRAL <- pend_02_24 %>%
   summarise(bBFjRAL = sum(pendlere), .groups = "drop")
 ```
 
-
 ```{r}
 #Bir i resten av landet og jobber i Boknafjorden 
 
@@ -502,7 +483,6 @@ bRALjBF <- pend_02_24 %>%
   group_by(aar) %>% 
   summarise(bRALjBF = sum(pendlere), .groups = "drop")
 ```
-
 
 ```{r}
 #Kombinerer bo og jobbfordeling til et datasett over arbeidsflyt
@@ -520,19 +500,15 @@ arb_flyt_02_24 <- tot_arb_HL %>%
 
 ```
 
-
-
 ```{r}
 print(arb_flyt_02_24, n = 23)
 ```
-
 
 ```{r}
 # Fjerne koder for resten av landet
 pend_clean <- pend_02_24 %>% 
   filter(akom != "k9999")   
 ```
-
 
 ```{r}
 # Pivotering hvor bosted settes som rader og arbeidsted settes som kolonner 
@@ -546,14 +522,12 @@ pend_mat <- pend_clean %>%
   )
 ```
 
-
 ```{r}
 # Totalt bosatte arbeidstakere i Boknafjorden 
 
 pend_mat <- pend_mat %>%
   mutate(k0000_TotalBo = rowSums(across(starts_with("k"))))
 ```
-
 
 ```{r}
 #Beregner prosentvis andel av bosatte
@@ -580,10 +554,7 @@ andel_pendle_data_02_24_long <- andel_pend_mat %>%
   arrange(aar, bkom, akom)
 ```
 
-
 ## Analysering av pendlerdata
-
-
 
 ```{r}
 #Lager en tabell som kan brukes for å finne fordelingen av pendler kommuner for en bo-kommune for et år
@@ -603,11 +574,9 @@ tab_pendlere <- function(data, bosted, aar, top_n = 10) {
 }
 ```
 
-
 ```{r}
 tab_pendlere(andel_pendle_data_02_24_long, "k1103", 2023)
 ```
-
 
 ```{r}
 # Setter opp oversikten for tabellen over i stolpediagram 
@@ -635,8 +604,6 @@ plot_pendlere <- function(data, bosted, aar, top_n = 12) {
 }
 ```
 
-
-
 ```{r}
 plot_pendlere(andel_pendle_data_02_24_long, "k1103", 2024)
 ```
@@ -656,12 +623,10 @@ pend_mat <- function(data, aar) {
 }
 ```
 
-
 ```{r}
 pend_mat_2024 <- pend_mat(pend_02_24, 2024)
 pend_mat_2010 <- pend_mat(pend_02_24, 2010)
 ```
-
 
 ```{r}
 andel_pendle_data_02_24_long <- andel_pendle_data_02_24_long %>%
@@ -675,9 +640,6 @@ andel_pendle_data_02_24_long <- andel_pendle_data_02_24_long %>%
 
 ```
 
-
-
-
 ```{r}
 # Intern pendling i alle kommuner fordelt på år
 
@@ -685,7 +647,6 @@ intern_pendling <- andel_pendle_data_02_24_long %>%
   filter(bkom == akom) %>%
   arrange(bkom, aar)
 ```
-
 
 ```{r}
 intern_pendling %>% group_by(bkom) %>% summarise(n_rows = n())
@@ -696,7 +657,6 @@ intern_pendling %>% group_by(bkom) %>% summarise(n_rows = n())
 intern_pendling <- intern_pendling %>%
   mutate(aar = as.numeric(aar))
 ```
-
 
 ```{r}
 #Visualisering av prosentandell som jobber i hjemme kommune
@@ -716,9 +676,6 @@ ggplot(intern_pendling,
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 ```
-
-
-
 
 ```{r}
 # For å få et plot som er enklere å tyde lages et diagram med bare de "store" kommunene
@@ -740,14 +697,10 @@ plot_intern_store <- intern_pendling %>%
 plot_intern_store
 ```
 
-
 ## Pendlingsanalyse for utvalgte kommuner
 
-
-Videre kommer diagram som viser fordelingen av pendlere for fem av de største kommunene. Diagrammene gir en oversikt over hvor stor andel av bokommunen bendler til hver enkelt arbeidskommune
-
-
-
+Videre kommer diagram som viser fordelingen av pendlere for fem av de største kommunene.
+Diagrammene gir en oversikt over hvor stor andel av bokommunen bendler til hver enkelt arbeidskommune
 
 ```{r}
 #Plot pendling Stavanger regionen 2024
@@ -766,13 +719,11 @@ plot_pendlere(andel_pendle_data_02_24_long, "k1108", 2024)
 plot_pendlere(andel_pendle_data_02_24_long, "k1124", 2024)
 ```
 
-
 ```{r}
 #Plot pendling Haugesund regionen 2024
 
 plot_pendlere(andel_pendle_data_02_24_long, "k1106", 2024)
 ```
-
 
 ```{r}
 #Plot pendling Karmøy regionen 2024
@@ -780,7 +731,8 @@ plot_pendlere(andel_pendle_data_02_24_long, "k1106", 2024)
 plot_pendlere(andel_pendle_data_02_24_long, "k1149", 2024)
 ```
 
-Videre lages matriser for pendlerdataene. Det vil blli benyttet utvalgte år fra årrekken, for å holde det overkommelig. 
+Videre lages matriser for pendlerdataene.
+Det vil blli benyttet utvalgte år fra årrekken, for å holde det overkommelig.
 
 ```{r}
 pend_mat_2002 <- pend_mat(pend_02_24, 2002)
@@ -822,4 +774,3 @@ heatmap_pend <- function(data, aar) {
 
 heatmap_pend(pend_02_24, 2024)
 ```
-
