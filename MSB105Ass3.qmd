@@ -743,3 +743,83 @@ plot_intern_store
 
 ## Pendlingsanalyse for utvalgte kommuner
 
+
+Videre kommer diagram som viser fordelingen av pendlere for fem av de største kommunene. Diagrammene gir en oversikt over hvor stor andel av bokommunen bendler til hver enkelt arbeidskommune
+
+
+
+
+```{r}
+#Plot pendling Stavanger regionen 2024
+plot_pendlere(andel_pendle_data_02_24_long, "k1103", 2024)
+```
+
+```{r}
+#Plot pendling Sandnes regionen 2024
+
+plot_pendlere(andel_pendle_data_02_24_long, "k1108", 2024)
+```
+
+```{r}
+#Plot pendling Sola regionen 2024
+
+plot_pendlere(andel_pendle_data_02_24_long, "k1124", 2024)
+```
+
+
+```{r}
+#Plot pendling Haugesund regionen 2024
+
+plot_pendlere(andel_pendle_data_02_24_long, "k1106", 2024)
+```
+
+
+```{r}
+#Plot pendling Karmøy regionen 2024
+
+plot_pendlere(andel_pendle_data_02_24_long, "k1149", 2024)
+```
+
+Videre lages matriser for pendlerdataene. Det vil blli benyttet utvalgte år fra årrekken, for å holde det overkommelig. 
+
+```{r}
+pend_mat_2002 <- pend_mat(pend_02_24, 2002)
+pend_mat_2005 <- pend_mat(pend_02_24, 2005)
+pend_mat_2010 <- pend_mat(pend_02_24, 2010)
+pend_mat_2015 <- pend_mat(pend_02_24, 2015)
+pend_mat_2023 <- pend_mat(pend_02_24, 2023)
+pend_mat_2024 <- pend_mat(pend_02_24, 2024)
+```
+
+```{r}
+vis_pend_mat <- function(data, aar) {
+  df <- pend_mat(data, aar)
+  flextable(df)
+}
+
+vis_pend_mat(pend_02_24, 2002)
+```
+
+```{r}
+# Heatmap pendler oversikt 
+heatmap_pend <- function(data, aar) {
+  df <- pend_mat(data, aar) %>%
+    pivot_longer(
+      cols = -bkom,
+      names_to = "akom",
+      values_to = "pendlere"
+    )
+  
+  ggplot(df, aes(x = akom, y = bkom, fill = pendlere)) +
+    geom_tile() +
+    scale_fill_gradient(low = "white", high = "steelblue") +
+    labs(title = paste("Pendlematrise", aar),
+         x = "Arbeidssted",
+         y = "Bosted") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+heatmap_pend(pend_02_24, 2024)
+```
+
