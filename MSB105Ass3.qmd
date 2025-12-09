@@ -580,3 +580,132 @@ andel_pendle_data_02_24_long <- andel_pend_mat %>%
   arrange(aar, bkom, akom)
 ```
 
+
+## Analysering av pendlerdata
+
+
+
+```{r}
+#Lager en tabell som kan brukes for å finne fordelingen av pendler kommuner for en bo-kommune for et år
+
+tab_pendlere <- function(data, bosted, aar, top_n = 10) {
+  
+  data %>%
+    filter(bkom == bosted, aar == !!aar) %>%
+    arrange(desc(andel)) %>%
+    slice_head(n = top_n) %>%
+    mutate(
+      akom = str_remove(akom, "^k"),
+      andel = round(andel, 1)
+    ) %>%
+    flextable() %>%
+    autofit()
+}
+```
+
+
+```{r}
+tab_pendlere(andel_pendle_data_02_24_long, "k1103", 2023)
+```
+
+
+```{r}
+# Setter opp oversikten for tabellen over i stolpediagram 
+
+plot_pendlere <- function(data, bosted, aar, top_n = 12) {
+  
+  df <- data %>%
+    filter(bkom == bosted, aar == !!aar) %>%
+    arrange(desc(andel)) %>%
+    slice_head(n = top_n) %>%
+    mutate(
+      akom = str_remove(akom, "^k"),
+      akom = factor(akom, levels = akom)
+    )
+  
+  ggplot(df, aes(x = akom, y = andel)) +
+    geom_col(fill = "steelblue") +
+    labs(
+      title = paste0("Pendling fra kommune ", bosted, " i ", aar),
+      x = "Arbeidsstedskommune",
+      y = "Andel pendlere (%)"
+    ) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 50, hjust = 1))
+}
+```
+
+
+
+```{r}
+plot_pendlere(andel_pendle_data_02_24_long, "k1103", 2024)
+```
+
+```{r}
+pend_mat <- function(data, aar) {
+  
+  data %>%
+    filter(aar == !!aar) %>%
+    select(bkom, akom, pendlere) %>%
+    pivot_wider(
+      names_from = akom,
+      values_from = pendlere,
+      values_fill = 0
+    ) %>%
+    arrange(bkom)
+}
+```
+
+
+```{r}
+pend_mat_2024 <- pend_mat(pend_02_24, 2024)
+pend_mat_2010 <- pend_mat(pend_02_24, 2010)
+```
+
+
+```{r}
+andel_pendle_data_02_24_long <- andel_pendle_data_02_24_long %>%
+  mutate(
+    bkom = str_trim(bkom),
+    akom = str_trim(akom),
+    bkom = ifelse(!str_starts(bkom, "k"), paste0("k", bkom), bkom),
+    akom = ifelse(!str_starts(akom, "k"), paste0("k", akom), akom)
+  )
+  
+
+```
+
+
+
+
+```{r}
+# Intern pendling i alle kommuner fordelt på år
+
+intern_pendling <- andel_pendle_data_02_24_long %>%
+  filter(bkom == akom) %>%
+  arrange(bkom, aar)
+```
+
+
+```{r}
+intern_pendling %>% group_by(bkom) %>% summarise(n_rows = n())
+```
+
+
+```{r}
+ggplot(intern_pendling,
+       aes(x = aar, y = andel, color = bkom, group = bkom)) +
+  geom_line(linewidth = 1.1) +
+  labs(
+    title = "Intern pendling (bor og jobber i samme kommune)",
+    x = "År",
+    y = "Andel (%)",
+    color = "Kommune"
+  ) +
+  theme_minimal()
+```
+
+
+
+
+
