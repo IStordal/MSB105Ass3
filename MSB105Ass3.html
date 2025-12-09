@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ivan Stordal &amp; Irjan Vikre">
+
+<title>Assignment 3</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="MSB105Ass3_files/libs/clipboard/clipboard.min.js"></script>
+<script src="MSB105Ass3_files/libs/quarto-html/quarto.js"></script>
+<script src="MSB105Ass3_files/libs/quarto-html/popper.min.js"></script>
+<script src="MSB105Ass3_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="MSB105Ass3_files/libs/quarto-html/anchor.min.js"></script>
+<link href="MSB105Ass3_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="MSB105Ass3_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="MSB105Ass3_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="MSB105Ass3_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="MSB105Ass3_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="MSB105Ass3_files/libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+<script src="MSB105Ass3_files/libs/tabwid-1.1.3/tabwid.js"></script>
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="MSB105Ass3.pdf"><i class="bi bi-file-pdf"></i>Typst</a></li><li><a href="MSB105Ass3.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Assignment 3</h1>
+<p class="subtitle lead">Pendling</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ivan Stordal &amp; Irjan Vikre </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">Tuesday 9 Dec, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell" data-warning="false">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in Sys.setlocale("LC_ALL", "Norwegian"): OS reports request to set
+locale to "Norwegian" cannot be honored</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] ""</code></pre>
+</div>
+</div>
+<section id="kommuner-og-data-innhenting-fra-ssb" class="level1">
+<h1>Kommuner og data innhenting fra SSB</h1>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "query": [
+    {
+      "code": "ArbstedKomm",
+      "selection": {
+        "filter": "item",
+        "values": ["3101", "2321", "9999"]
+      }
+    },
+    {
+      "code": "Bokommuen",
+      "selection": {
+        "filter": "item",
+        "values": ["3101", "2321", "9999"]
+      }
+    },
+    {
+      "code": "ContentsCode",
+      "selection": {
+        "filter": "item",
+        "values": ["Sysselsatte"]
+      }
+    },
+    {
+      "code": "Tid",
+      "selection": {
+        "filter": "item",
+        "values": ["2000", "2023", "2024"]
+      }
+    }
+  ],
+  "response": {
+    "format": "json-stat2"
+  }
+} </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 529,713 × 6
+  aar   akom  akom_navn bkom  bkom_navn       pendlere
+  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;              &lt;int&gt;
+1 2002  k3101 Halden    k1102 Sandnes (-2019)        0
+2 2003  k3101 Halden    k1102 Sandnes (-2019)        0
+3 2004  k3101 Halden    k1102 Sandnes (-2019)        0
+4 2005  k3101 Halden    k1102 Sandnes (-2019)        0
+5 2006  k3101 Halden    k1102 Sandnes (-2019)        0
+# ℹ 529,708 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 529,713 × 6
+  aar   akom  akom_navn       bkom  bkom_navn pendlere
+  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;           &lt;chr&gt; &lt;chr&gt;        &lt;int&gt;
+1 2002  k1102 Sandnes (-2019) k3101 Halden           0
+2 2003  k1102 Sandnes (-2019) k3101 Halden           0
+3 2004  k1102 Sandnes (-2019) k3101 Halden           0
+4 2005  k1102 Sandnes (-2019) k3101 Halden           0
+5 2006  k1102 Sandnes (-2019) k3101 Halden           0
+# ℹ 529,708 more rows</code></pre>
+</div>
+</div>
+<section id="kommunesammenslåingene" class="level2">
+<h2 class="anchored" data-anchor-id="kommunesammenslåingene">Kommunesammenslåingene</h2>
+<section id="bosted-rundt-boknafjorden" class="level3">
+<h3 class="anchored" data-anchor-id="bosted-rundt-boknafjorden">Bosted rundt Boknafjorden</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9,660 × 6
+  aar   nye_akom nye_akom_navn nye_bkom nye_bkom_navn pendlere
+  &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;chr&gt;    &lt;chr&gt;            &lt;int&gt;
+1 2002  k1103    Stavanger     k1103    Stavanger        43142
+2 2002  k1103    Stavanger     k1106    Haugesund          347
+3 2002  k1103    Stavanger     k1108    Sandnes           8826
+4 2002  k1103    Stavanger     k1119    Hå                 637
+5 2002  k1103    Stavanger     k1120    Klepp             1187
+# ℹ 9,655 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="eksempel-stavanger" class="level3">
+<h3 class="anchored" data-anchor-id="eksempel-stavanger">Eksempel: Stavanger</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 23 × 6
+   aar   nye_akom nye_akom_navn nye_bkom nye_bkom_navn pendlere
+   &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;chr&gt;    &lt;chr&gt;            &lt;int&gt;
+ 1 2002  k1103    Stavanger     k1103    Stavanger        43142
+ 2 2003  k1103    Stavanger     k1103    Stavanger        43186
+ 3 2004  k1103    Stavanger     k1103    Stavanger        43472
+ 4 2005  k1103    Stavanger     k1103    Stavanger        43962
+ 5 2006  k1103    Stavanger     k1103    Stavanger        46632
+ 6 2007  k1103    Stavanger     k1103    Stavanger        49082
+ 7 2008  k1103    Stavanger     k1103    Stavanger        49561
+ 8 2009  k1103    Stavanger     k1103    Stavanger        49421
+ 9 2010  k1103    Stavanger     k1103    Stavanger        50038
+10 2011  k1103    Stavanger     k1103    Stavanger        51547
+11 2012  k1103    Stavanger     k1103    Stavanger        52519
+12 2013  k1103    Stavanger     k1103    Stavanger        52890
+13 2014  k1103    Stavanger     k1103    Stavanger        52328
+14 2015  k1103    Stavanger     k1103    Stavanger        49833
+15 2016  k1103    Stavanger     k1103    Stavanger        48772
+16 2017  k1103    Stavanger     k1103    Stavanger        48796
+17 2018  k1103    Stavanger     k1103    Stavanger        49616
+18 2019  k1103    Stavanger     k1103    Stavanger        50318
+19 2020  k1103    Stavanger     k1103    Stavanger        49390
+20 2021  k1103    Stavanger     k1103    Stavanger        50713
+21 2022  k1103    Stavanger     k1103    Stavanger        51860
+22 2023  k1103    Stavanger     k1103    Stavanger        53630
+23 2024  k1103    Stavanger     k1103    Stavanger        53588</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "k1103" "k1106" "k1108" "k1119" "k1120" "k1121" "k1122" "k1124"
+ [9] "k1127" "k1130" "k1133" "k1134" "k1135" "k1144" "k1145" "k1146"
+[17] "k1149" "k1160" "k4611" "k4612"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "k1103" "k1106" "k1108" "k1119" "k1120" "k1121" "k1122" "k1124"
+ [9] "k1127" "k1130" "k1133" "k1134" "k1135" "k1144" "k1145" "k1146"
+[17] "k1149" "k1160" "k4611" "k4612" "k9999"</code></pre>
+</div>
+</div>
+</section>
+<section id="tilsvarende-for-pend_02_24_arbbf" class="level3">
+<h3 class="anchored" data-anchor-id="tilsvarende-for-pend_02_24_arbbf">Tilsvarende for pend_02_24_arbBF</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 23 × 6
+   aar   nye_akom nye_akom_navn nye_bkom nye_bkom_navn pendlere
+   &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;chr&gt;    &lt;chr&gt;            &lt;int&gt;
+ 1 2002  k1103    Stavanger     k1103    Stavanger        43142
+ 2 2003  k1103    Stavanger     k1103    Stavanger        43186
+ 3 2004  k1103    Stavanger     k1103    Stavanger        43472
+ 4 2005  k1103    Stavanger     k1103    Stavanger        43962
+ 5 2006  k1103    Stavanger     k1103    Stavanger        46632
+ 6 2007  k1103    Stavanger     k1103    Stavanger        49082
+ 7 2008  k1103    Stavanger     k1103    Stavanger        49561
+ 8 2009  k1103    Stavanger     k1103    Stavanger        49421
+ 9 2010  k1103    Stavanger     k1103    Stavanger        50038
+10 2011  k1103    Stavanger     k1103    Stavanger        51547
+11 2012  k1103    Stavanger     k1103    Stavanger        52519
+12 2013  k1103    Stavanger     k1103    Stavanger        52890
+13 2014  k1103    Stavanger     k1103    Stavanger        52328
+14 2015  k1103    Stavanger     k1103    Stavanger        49833
+15 2016  k1103    Stavanger     k1103    Stavanger        48772
+16 2017  k1103    Stavanger     k1103    Stavanger        48796
+17 2018  k1103    Stavanger     k1103    Stavanger        49616
+18 2019  k1103    Stavanger     k1103    Stavanger        50318
+19 2020  k1103    Stavanger     k1103    Stavanger        49390
+20 2021  k1103    Stavanger     k1103    Stavanger        50713
+21 2022  k1103    Stavanger     k1103    Stavanger        51860
+22 2023  k1103    Stavanger     k1103    Stavanger        53630
+23 2024  k1103    Stavanger     k1103    Stavanger        53588</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "k1103" "k1106" "k1108" "k1119" "k1120" "k1121" "k1122" "k1124"
+ [9] "k1127" "k1130" "k1133" "k1134" "k1135" "k1144" "k1145" "k1146"
+[17] "k1149" "k1160" "k4611" "k4612" "k9999"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "k1103" "k1106" "k1108" "k1119" "k1120" "k1121" "k1122" "k1124"
+ [9] "k1127" "k1130" "k1133" "k1134" "k1135" "k1144" "k1145" "k1146"
+[17] "k1149" "k1160" "k4611" "k4612"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "aar"       "akom"      "akom_navn" "bkom"      "bkom_navn" "pendlere" </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "aar"       "akom"      "akom_navn" "bkom"      "bkom_navn" "pendlere" </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "aar"       "akom"      "akom_navn" "bkom"      "bkom_navn" "pendlere" </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10120     6</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "aar"       "akom"      "akom_navn" "bkom"      "bkom_navn" "pendlere" </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9660    6</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "aar"       "akom"      "akom_navn" "bkom"      "bkom_navn" "pendlere" </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9660    6</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="totalt-antall-arbeidstakere-i-hele-landet-per-år" class="level2">
+<h2 class="anchored" data-anchor-id="totalt-antall-arbeidstakere-i-hele-landet-per-år">Totalt antall arbeidstakere i hele landet per år</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 23 × 2
+   aar   arbtak_HL
+   &lt;chr&gt;     &lt;int&gt;
+ 1 2002    2267000
+ 2 2003    2260000
+ 3 2004    2274000
+ 4 2005    2308000
+ 5 2006    2389000
+ 6 2007    2484000
+ 7 2008    2525000
+ 8 2009    2497000
+ 9 2010    2517000
+10 2011    2562000
+11 2012    2589000
+12 2013    2619000
+13 2014    2650000
+14 2015    2597064
+15 2016    2613654
+16 2017    2647297
+17 2018    2683447
+18 2019    2710436
+19 2020    2681548
+20 2021    2762179
+21 2022    2818121
+22 2023    2845307
+23 2024    2863317</code></pre>
+</div>
+</div>
+</section>
+<section id="beregning-av-bo-og-jobbfordeling-mellom-bokna-regionen-og-resten-av-landet" class="level2">
+<h2 class="anchored" data-anchor-id="beregning-av-bo-og-jobbfordeling-mellom-bokna-regionen-og-resten-av-landet">Beregning av bo og jobbfordeling mellom Bokna-regionen og resten av landet</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 23 × 5
+   aar   arbtak_HL bBFjBF bBFjRAL bRALjBF
+   &lt;chr&gt;     &lt;int&gt;  &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
+ 1 2002    2267000 166173   14023    1241
+ 2 2003    2260000 167791   12800    1241
+ 3 2004    2274000 170579   12972    1272
+ 4 2005    2308000 175251   13958    1554
+ 5 2006    2389000 185284   14429    1632
+ 6 2007    2484000 195482   14889    1690
+ 7 2008    2525000 200562   15774    1705
+ 8 2009    2497000 200582   14824    1663
+ 9 2010    2517000 203772   15202    1711
+10 2011    2562000 210162   14947    1822
+11 2012    2589000 214299   15270    1926
+12 2013    2619000 217590   15948    1914
+13 2014    2650000 219911   16387    1923
+14 2015    2597064 211247   15074    1790
+15 2016    2613654 207992   14651    1780
+16 2017    2647297 209330   15386    1842
+17 2018    2683447 214041   14593    1838
+18 2019    2710436 217396   14073    1911
+19 2020    2681548 215431   13620    1930
+20 2021    2762179 221587   14693    1957
+21 2022    2818121 225798   15597    1981
+22 2023    2845307 230427   15865    1979
+23 2024    2863317 233321   16379    2025</code></pre>
+</div>
+</div>
+</section>
+<section id="analysering-av-pendlerdata" class="level2">
+<h2 class="anchored" data-anchor-id="analysering-av-pendlerdata">Analysering av pendlerdata</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-a580c42a{}.cl-a555c536{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a578dec2{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a578decc{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a5790e24{width:0.625in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790e2e{width:0.701in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790e38{width:1.237in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790e39{width:0.668in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790e3a{width:0.625in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790e42{width:0.701in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790e43{width:1.237in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790eb0{width:0.668in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790eb1{width:0.625in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790eba{width:0.701in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790ebb{width:1.237in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790ebc{width:0.668in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790ec4{width:0.625in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790ec5{width:0.701in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790ec6{width:1.237in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5790ece{width:0.668in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a580c42a"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a5790e24"><p class="cl-a578dec2"><span class="cl-a555c536">aar</span></p></th><th class="cl-a5790e2e"><p class="cl-a578dec2"><span class="cl-a555c536">bkom</span></p></th><th class="cl-a5790e38"><p class="cl-a578dec2"><span class="cl-a555c536">akom</span></p></th><th class="cl-a5790e39"><p class="cl-a578decc"><span class="cl-a555c536">andel</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a5790e3a"><p class="cl-a578dec2"><span class="cl-a555c536">2023</span></p></td><td class="cl-a5790e42"><p class="cl-a578dec2"><span class="cl-a555c536">k1103</span></p></td><td class="cl-a5790e43"><p class="cl-a578dec2"><span class="cl-a555c536">0000_TotalBo</span></p></td><td class="cl-a5790eb0"><p class="cl-a578decc"><span class="cl-a555c536">100.0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a5790eb1"><p class="cl-a578dec2"><span class="cl-a555c536">2023</span></p></td><td class="cl-a5790eba"><p class="cl-a578dec2"><span class="cl-a555c536">k1103</span></p></td><td class="cl-a5790ebb"><p class="cl-a578dec2"><span class="cl-a555c536">1103</span></p></td><td class="cl-a5790ebc"><p class="cl-a578decc"><span class="cl-a555c536">72.7</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a5790eb1"><p class="cl-a578dec2"><span class="cl-a555c536">2023</span></p></td><td class="cl-a5790eba"><p class="cl-a578dec2"><span class="cl-a555c536">k1103</span></p></td><td class="cl-a5790ebb"><p class="cl-a578dec2"><span class="cl-a555c536">1108</span></p></td><td class="cl-a5790ebc"><p class="cl-a578decc"><span class="cl-a555c536">11.4</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a5790eb1"><p class="cl-a578dec2"><span class="cl-a555c536">2023</span></p></td><td class="cl-a5790eba"><p class="cl-a578dec2"><span class="cl-a555c536">k1103</span></p></td><td class="cl-a5790ebb"><p class="cl-a578dec2"><span class="cl-a555c536">1124</span></p></td><td class="cl-a5790ebc"><p class="cl-a578decc"><span class="cl-a555c536">11.2</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a5790eb1"><p class="cl-a578dec2"><span class="cl-a555c536">2023</span></p></td><td class="cl-a5790eba"><p class="cl-a578dec2"><span class="cl-a555c536">k1103</span></p></td><td class="cl-a5790ebb"><p class="cl-a578dec2"><span class="cl-a555c536">1127</span></p></td><td class="cl-a5790ebc"><p class="cl-a578decc"><span class="cl-a555c536">1.9</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a5790eb1"><p class="cl-a578dec2"><span class="cl-a555c536">2023</span></p></td><td class="cl-a5790eba"><p class="cl-a578dec2"><span class="cl-a555c536">k1103</span></p></td><td class="cl-a5790ebb"><p class="cl-a578dec2"><span class="cl-a555c536">1120</span></p></td><td class="cl-a5790ebc"><p class="cl-a578decc"><span class="cl-a555c536">0.9</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a5790eb1"><p class="cl-a578dec2"><span class="cl-a555c536">2023</span></p></td><td class="cl-a5790eba"><p class="cl-a578dec2"><span class="cl-a555c536">k1103</span></p></td><td class="cl-a5790ebb"><p class="cl-a578dec2"><span class="cl-a555c536">1121</span></p></td><td class="cl-a5790ebc"><p class="cl-a578decc"><span class="cl-a555c536">0.5</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a5790eb1"><p class="cl-a578dec2"><span class="cl-a555c536">2023</span></p></td><td class="cl-a5790eba"><p class="cl-a578dec2"><span class="cl-a555c536">k1103</span></p></td><td class="cl-a5790ebb"><p class="cl-a578dec2"><span class="cl-a555c536">1119</span></p></td><td class="cl-a5790ebc"><p class="cl-a578decc"><span class="cl-a555c536">0.3</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a5790eb1"><p class="cl-a578dec2"><span class="cl-a555c536">2023</span></p></td><td class="cl-a5790eba"><p class="cl-a578dec2"><span class="cl-a555c536">k1103</span></p></td><td class="cl-a5790ebb"><p class="cl-a578dec2"><span class="cl-a555c536">1130</span></p></td><td class="cl-a5790ebc"><p class="cl-a578decc"><span class="cl-a555c536">0.3</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a5790ec4"><p class="cl-a578dec2"><span class="cl-a555c536">2023</span></p></td><td class="cl-a5790ec5"><p class="cl-a578dec2"><span class="cl-a555c536">k1103</span></p></td><td class="cl-a5790ec6"><p class="cl-a578dec2"><span class="cl-a555c536">1122</span></p></td><td class="cl-a5790ece"><p class="cl-a578decc"><span class="cl-a555c536">0.3</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MSB105Ass3_files/figure-html/unnamed-chunk-53-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 2
+   bkom  n_rows
+   &lt;chr&gt;  &lt;int&gt;
+ 1 k1103     23
+ 2 k1106     23
+ 3 k1108     23
+ 4 k1119     23
+ 5 k1120     23
+ 6 k1121     23
+ 7 k1122     23
+ 8 k1124     23
+ 9 k1127     23
+10 k1130     23
+11 k1133     23
+12 k1134     23
+13 k1135     23
+14 k1144     23
+15 k1145     23
+16 k1146     23
+17 k1149     23
+18 k1160     23
+19 k4611     23
+20 k4612     23</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MSB105Ass3_files/figure-html/unnamed-chunk-60-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MSB105Ass3_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="pendlingsanalyse-for-utvalgte-kommuner" class="level2">
+<h2 class="anchored" data-anchor-id="pendlingsanalyse-for-utvalgte-kommuner">Pendlingsanalyse for utvalgte kommuner</h2>
+<p>Videre kommer diagram som viser fordelingen av pendlere for fem av de største kommunene. Diagrammene gir en oversikt over hvor stor andel av bokommunen bendler til hver enkelt arbeidskommune</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MSB105Ass3_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MSB105Ass3_files/figure-html/unnamed-chunk-63-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MSB105Ass3_files/figure-html/unnamed-chunk-64-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MSB105Ass3_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MSB105Ass3_files/figure-html/unnamed-chunk-66-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Videre lages matriser for pendlerdataene. Det vil blli benyttet utvalgte år fra årrekken, for å holde det overkommelig.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-a7fc9094{}.cl-a7e62106{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a7ee420a{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a7ee4214{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a7ee7a9a{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7ee7aa4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7ee7aae{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7ee7ab8{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7ee7ab9{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7ee7ac2{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a7fc9094"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a7ee7a9a"><p class="cl-a7ee420a"><span class="cl-a7e62106">bkom</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1103</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1106</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1108</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1119</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1120</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1121</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1122</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1124</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1127</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1130</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1133</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1134</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1135</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1144</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1145</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1146</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1149</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k1160</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k4611</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k4612</span></p></th><th class="cl-a7ee7aa4"><p class="cl-a7ee4214"><span class="cl-a7e62106">k9999</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1103</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">43,142</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">120</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4,713</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">91</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">196</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">220</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">85</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4,273</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">930</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">72</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">29</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">25</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">9</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">19</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">20</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">24</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">7</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5,042</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1106</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">347</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">10,353</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">87</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">64</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">19</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">637</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,732</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">74</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">9</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">102</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,349</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1108</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8,826</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">51</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">14,155</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">149</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">585</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">531</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">361</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,954</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">107</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">82</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">13</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">7</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">27</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2,064</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1119</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">637</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">7</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">442</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4,863</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">364</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">673</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">33</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">192</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">489</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1120</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,187</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,189</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">223</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2,958</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">919</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">49</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">453</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">17</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">12</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">397</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1121</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,049</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">920</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">412</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">853</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3,400</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">102</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">266</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">407</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1122</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">908</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,004</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">40</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">125</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">117</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,971</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">237</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">301</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1124</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3,774</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">22</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,068</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">30</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">119</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">68</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">16</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3,854</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">81</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">7</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">10</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">792</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1127</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2,249</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">7</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">274</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">12</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">15</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">386</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,295</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">325</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1130</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">957</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">272</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">11</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">11</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">124</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">12</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2,910</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">114</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">493</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1133</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">102</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">18</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">10</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">50</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,158</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">23</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">59</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1134</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">97</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">35</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">26</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">18</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">7</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">17</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,631</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">58</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">10</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">113</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1135</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">65</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">56</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">14</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">51</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,887</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">10</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">146</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1144</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">63</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">12</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">12</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">7</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">148</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">15</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1145</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">16</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">38</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">222</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">49</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">31</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1146</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">109</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,369</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">28</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">28</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">16</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">14</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">22</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2,107</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">350</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">95</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">16</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">352</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1149</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">416</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4,241</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">128</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">7</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">144</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">21</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">24</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">18</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">356</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">10,513</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">25</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">20</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,484</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k1160</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">93</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">309</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">20</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">23</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">31</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">8</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">135</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">74</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,723</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">118</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">164</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k4611</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">39</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">57</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">10</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">23</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">9</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">56</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,278</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">274</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7aae"><p class="cl-a7ee420a"><span class="cl-a7e62106">k4612</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">41</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">756</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">17</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">10</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">1</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">2</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">4</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">5</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">73</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">111</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">12</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">3</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">883</span></p></td><td class="cl-a7ee7ab8"><p class="cl-a7ee4214"><span class="cl-a7e62106">288</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7ee7ab9"><p class="cl-a7ee420a"><span class="cl-a7e62106">k9999</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">4,638</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">863</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,865</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">260</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">115</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">155</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">103</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">1,757</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">143</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">29</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">26</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">56</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">28</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">10</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">6</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">67</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">293</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">27</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">51</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">24</span></p></td><td class="cl-a7ee7ac2"><p class="cl-a7ee4214"><span class="cl-a7e62106">0</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MSB105Ass3_files/figure-html/unnamed-chunk-69-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -33,7 +33,7 @@ library(stringr) |> suppressPackageStartupMessages()
 ```
 
 ```{r}
-
+#| Warning: false
 Sys.setlocale("LC_ALL", "Norwegian")
 ```
 
