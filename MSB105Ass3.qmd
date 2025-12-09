@@ -691,21 +691,55 @@ intern_pendling <- andel_pendle_data_02_24_long %>%
 intern_pendling %>% group_by(bkom) %>% summarise(n_rows = n())
 ```
 
+```{r}
+# Muterer aar til numerisk for å unngå feilmeldinger i GGplot
+intern_pendling <- intern_pendling %>%
+  mutate(aar = as.numeric(aar))
+```
+
 
 ```{r}
+#Visualisering av prosentandell som jobber i hjemme kommune
+
 ggplot(intern_pendling,
        aes(x = aar, y = andel, color = bkom, group = bkom)) +
   geom_line(linewidth = 1.1) +
+  scale_x_continuous(breaks = seq(2002, 2024, by = 2)) +
   labs(
     title = "Intern pendling (bor og jobber i samme kommune)",
     x = "År",
     y = "Andel (%)",
     color = "Kommune"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 ```
 
 
 
 
+```{r}
+# For å få et plot som er enklere å tyde lages et diagram med bare de "store" kommunene
+store_kommuner <- c("k1103", "k1108", "k1124", "k1106", "k1149") 
+# Stavanger, Sandnes, Sola, Haugesund, Karmøy
+
+plot_intern_store <- intern_pendling %>%
+  filter(bkom %in% store_kommuner) %>%
+  ggplot(aes(x = aar, y = andel, color = bkom)) +
+  geom_line(linewidth = 1.2) +
+  labs(
+    title = "Intern pendling i store kommuner i Bokna-regionen",
+    x = "År",
+    y = "Andel (%)",
+    color = "Kommune"
+  ) +
+  theme_minimal()
+
+plot_intern_store
+```
+
+
+## Pendlingsanalyse for utvalgte kommuner
 
