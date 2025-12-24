@@ -1,0 +1,34 @@
+---
+title: "ag comments"
+format: html
+editor: source
+---
+
+## Generelle kommentarer
+
+-   Dokumentet er bare reproduserbart på Windows-maskiner siden dere har kommandoen `Sys.setlocale("LC_ALL", "Norwegian")` i en chunk. Se kommentar i dokumentet for tips om hva dere kan gjøre med dette.
+
+## Tips og Triks
+
+-   Ingen bibliography så jeg kommenterte ut hvl_apa7_stil_bokmal_v1
+-   Chunk-en som laster bibliotek bør ha navnet (label) setup. Chunk-en med label setup vil bli sjekket først før kode i andre chunk-er blir kjørt.
+-   Bruk Quarto opsjonen `#| message: false` til å undertrykke beskjeder fra pakkene.
+-   Det er unødvendig å laste pakkene lubridate, dplyr og stringr. De er en del av tidyverse og vil bli lastet av `library(tidyverse)`.
+-   Jeg forslår å sette `options(paged.print = FALSE)` i setup chunk-en så får en console output.
+-   `#| cache: true` bør settes i chunk-en der `ApiData12()` kjøres. Det er denne som tar tid og koster ressurser. Ditto for arbeidssted.
+-   I funksjonen plot_pendlere foreslår jeg et argument intern slik at en kan velge om en vil ha med intern-pedlere eller ikke.
+-   Jeg foretrekker selv å bruke lokale variabler i funksjonsdefinisjoner (og ikke pipes), men det er en smakssak.
+-   Disse pendlematrisene er noe her å presentere i et dokument. Har vist forslag til hvordan det kan løses i pdf format (typst) vha. sider i landscape format. Egentlig burde sisetallet vært til venstre og snudd 90 grader, men man kan ikke få alt.
+-   Landscape i pdf (latex) format får sidetallet riktig plassert, men tabellen har alt for mye «space». Man må derfor benytte `#| ft.arraystretch: 1.2` i chunkene for å få et ok resultat med pdf via latex.
+-   Jeg likte «heatmap»-et dere hadde lagt.
+-   Siden dere skriver på norsk endret jeg til `land: nb` i YAML header. For å få ting til å virke måtte jeg kjøre `tlmgr install babel-norsk` i Terminal. Gjorde også en oppdatering til tinytex v2025.12 vha. kommandoen `quarto update tool tinytex` også denne i terminal.
+-   La også inn docx som format. Gir også brukbart resultat.
+
+
+
+
+
+
+
+
+

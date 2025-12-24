@@ -4,10 +4,11 @@ subtitle:  "Pendling"
 author: "Ivan Stordal & Irjan Vikre"
 date: last-modified
 date-format: "dddd D MMM, YYYY"
-csl: hvl_apa7_stil_bokmal_v1
-lang: en-GB
+#csl: hvl_apa7_stil_bokmal_v1
+lang: nb
 format:
   html: default
+  docx: default
   typst:
     papersize: a4
   pdf: 
@@ -16,6 +17,7 @@ format:
     keep-tex: true
     papersize: A4
     fig-pos: "H"
+    fontsize: 10pt
 abstract: ""
 editor: 
   markdown: 
@@ -24,18 +26,27 @@ echo: false
 ---
 
 ```{r}
-library(tidyverse) |> suppressPackageStartupMessages()
-library(lubridate) |> suppressPackageStartupMessages()
-library(PxWebApiData) |> suppressPackageStartupMessages()
-library(flextable) |> suppressPackageStartupMessages()
-library(dplyr) |> suppressPackageStartupMessages()
-library(stringr) |> suppressPackageStartupMessages()
+#| label: setup
+#| message: false
+library(tidyverse)
+library(PxWebApiData)
+library(flextable)
+
+options(paged.print = FALSE)
 ```
 
 ```{r}
-#| Warning: false
-Sys.setlocale("LC_ALL", "Norwegian")
+# ag: Denne burde virke også på andre system enn Windows
+# har også sett raportert at Sys.setlocale(locale = "nb_NO.UTF-8")
+# virker på Windows. Denne bør settes i filen .Rprofile
+# som skal ligge her: C:\Users\<YourUsername>\.Rprofile
+if (Sys.info()["sysname"] == "Windows") {
+  Sys.setlocale("LC_ALL", "Norwegian") 
+} else {
+  Sys.setlocale(locale = "nb_NO.UTF-8")
+}
 ```
+
 
 # Kommuner og data innhenting fra SSB
 
@@ -70,6 +81,7 @@ returnApiQuery = TRUE
 ```
 
 ```{r}
+#| cache: true
 pend_02_24_ssb_boBF <- ApiData12(
     urlToData = "03321",
     ArbstedKomm = list('*'),
@@ -79,8 +91,6 @@ pend_02_24_ssb_boBF <- ApiData12(
 ```
 
 ```{r}
-#| cache: true
-
 pend_02_24_boBF <- pend_02_24_ssb_boBF %>% 
   # Henter kommune navn fra desc df
   mutate(
@@ -112,18 +122,16 @@ print(pend_02_24_boBF, n = 5)
 ```
 
 ```{r}
+#| cache: true
 pend_02_24_ssb_arbBF <- ApiData12(
     urlToData   = "03321",
     ArbstedKomm = knr,               # jobber i Bokna-kommunene
     Bokommuen   = list('*'),         # bor i alle kommuner
     Tid         = as.character(2002:2024)
 )
-
 ```
 
 ```{r}
-#| cache: true
-
 pend_02_24_arbBF <- pend_02_24_ssb_arbBF %>% 
   # Henter kommune navn fra desc df
   mutate(
@@ -581,9 +589,12 @@ tab_pendlere(andel_pendle_data_02_24_long, "k1103", 2023)
 ```{r}
 # Setter opp oversikten for tabellen over i stolpediagram 
 
-plot_pendlere <- function(data, bosted, aar, top_n = 12) {
+plot_pendlere <- function(data, bosted, aar, top_n = 12, intern = TRUE) {
+  
+  if (intern == FALSE) data = filter(data, !akom == bkom) 
   
   df <- data %>%
+    filter(!akom == 'k0000_TotalBo') |>
     filter(bkom == bosted, aar == !!aar) %>%
     arrange(desc(andel)) %>%
     slice_head(n = top_n) %>%
@@ -605,7 +616,7 @@ plot_pendlere <- function(data, bosted, aar, top_n = 12) {
 ```
 
 ```{r}
-plot_pendlere(andel_pendle_data_02_24_long, "k1103", 2024)
+plot_pendlere(andel_pendle_data_02_24_long, "k1103", 2024, intern = TRUE)
 ```
 
 ```{r}
@@ -743,7 +754,114 @@ pend_mat_2023 <- pend_mat(pend_02_24, 2023)
 pend_mat_2024 <- pend_mat(pend_02_24, 2024)
 ```
 
+I tabellene @tbl-pmat-2002, @tbl-pmat-2005, @tbl-pmat-2010, @tbl-pmat-2015, @tbl-pmat-2023 og @tbl-pmat-2024 er pendlematriser for Bokna-regionen for årene 2002, 2005, 2010, 2015, 2023 og 2024 gjengitt.
+
+:::{.landscape}
+
 ```{r}
+#| ft.arraystretch: 1.2
+#| label: tbl-pmat-2002
+#| tbl-cap: Pendlematrise 2002 for Bokna-regionen.
+#| echo: false
+pend_mat_2002 |> 
+  flextable() |> 
+  fontsize(size = 9, part = "all") |> 
+  colformat_int(big.mark = "") |> 
+  line_spacing(space = 0.3, part = "body")  |> 
+  width(width = 0.9, unit = "cm") |> 
+  theme_booktabs()
+```
+:::
+
+:::{.landscape}
+
+```{r}
+#| ft.arraystretch: 1.2
+#| label: tbl-pmat-2005
+#| tbl-cap: Pendlematrise 2005 for Bokna-regionen.
+#| echo: false
+pend_mat_2005 |> 
+  flextable() |> 
+  fontsize(size = 9, part = "all") |> 
+  colformat_int(big.mark = "") |> 
+  line_spacing(space = 0.3, part = "body")  |> 
+  width(width = 0.9, unit = "cm")
+```
+
+:::
+
+:::{.landscape}
+
+```{r}
+#| ft.arraystretch: 1.2
+#| label: tbl-pmat-2010
+#| tbl-cap: Pendlematrise 2010 for Bokna-regionen.
+#| echo: false
+pend_mat_2010 |> 
+  flextable() |> 
+  fontsize(size = 9, part = "all") |> 
+  colformat_int(big.mark = "") |> 
+  line_spacing(space = 0.3, part = "body")  |> 
+  width(width = 0.9, unit = "cm")
+```
+
+:::
+
+:::{.landscape}
+
+```{r}
+#| ft.arraystretch: 1.2
+#| label: tbl-pmat-2015
+#| tbl-cap: Pendlematrise 2015 for Bokna-regionen.
+#| echo: false
+pend_mat_2015 |> 
+  flextable() |> 
+  fontsize(size = 9, part = "all") |> 
+  colformat_int(big.mark = "") |> 
+  line_spacing(space = 0.3, part = "body")  |> 
+  width(width = 0.9, unit = "cm")
+```
+
+:::
+
+:::{.landscape}
+
+```{r}
+#| ft.arraystretch: 1.2
+#| label: tbl-pmat-2023
+#| tbl-cap: Pendlematrise 2023 for Bokna-regionen.
+#| echo: false
+pend_mat_2023 |> 
+  flextable() |> 
+  fontsize(size = 9, part = "all") |> 
+  colformat_int(big.mark = "") |> 
+  line_spacing(space = 0.3, part = "body")  |> 
+  width(width = 0.9, unit = "cm")
+```
+
+:::
+
+:::{.landscape}
+
+```{r}
+#| ft.arraystretch: 1.2
+#| label: tbl-pmat-2024
+#| tbl-cap: Pendlematrise 2024 for Bokna-regionen.
+#| echo: false
+pend_mat_2024 |> 
+  flextable() |> 
+  fontsize(size = 9, part = "all") |> 
+  colformat_int(big.mark = "") |> 
+  line_spacing(space = 0.3, part = "body")  |> 
+  width(width = 0.9, unit = "cm")
+```
+
+:::
+
+
+```{r}
+#| eval: false
+#| echo: false
 vis_pend_mat <- function(data, aar) {
   df <- pend_mat(data, aar)
   flextable(df)
@@ -751,6 +869,8 @@ vis_pend_mat <- function(data, aar) {
 
 vis_pend_mat(pend_02_24, 2002)
 ```
+
+
 
 ```{r}
 # Heatmap pendler oversikt 
